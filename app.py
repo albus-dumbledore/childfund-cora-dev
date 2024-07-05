@@ -82,7 +82,7 @@ def main():
         handle_userinput(user_question)
 
     # Directory where PDF files are stored
-    pdf_dir = "/source/"
+    pdf_dir = "./source/"
 
     # Read PDF files from the directory
     pdf_docs = [os.path.join(pdf_dir, f) for f in os.listdir(pdf_dir) if f.endswith('.pdf')]
