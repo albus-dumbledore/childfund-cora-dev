@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
@@ -75,29 +76,30 @@ def main():
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = None
 
-    st.header("Chat with multiple PDFs :books:")
-    user_question = st.text_input("Ask a question about your documents:")
+    st.header("Hello, my name is CORA, and I am the ChildFund Policies and Procedures Chatbot.")
+    user_question = st.text_input("How may I assist you today?")
     if user_question:
         handle_userinput(user_question)
 
-    with st.sidebar:
-        st.subheader("Your documents")
-        pdf_docs = st.file_uploader(
-            "Upload your PDFs here and click on 'Process'", accept_multiple_files=True)
-        if st.button("Process"):
-            with st.spinner("Processing"):
-                # get pdf text
-                raw_text = get_pdf_text(pdf_docs)
+    # Directory where PDF files are stored
+    pdf_dir = "/source/"
 
-                # get the text chunks
-                text_chunks = get_text_chunks(raw_text)
+    # Read PDF files from the directory
+    pdf_docs = [os.path.join(pdf_dir, f) for f in os.listdir(pdf_dir) if f.endswith('.pdf')]
 
-                # create vector store
-                vectorstore = get_vectorstore(text_chunks)
+    if pdf_docs:
+        with st.spinner("Processing"):
+            # get pdf text
+            raw_text = get_pdf_text(pdf_docs)
 
-                # create conversation chain
-                st.session_state.conversation = get_conversation_chain(
-                    vectorstore)
+            # get the text chunks
+            text_chunks = get_text_chunks(raw_text)
+
+            # create vector store
+            vectorstore = get_vectorstore(text_chunks)
+
+            # create conversation chain
+            st.session_state.conversation = get_conversation_chain(vectorstore)
 
 
 if __name__ == '__main__':
